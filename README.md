@@ -65,6 +65,6 @@ Open a Pull Request
 Distributed under the [Choose your license, e.g., MIT License, Apache 2.0 License, GPLv3]. See LICENSE for more information.
 
 📞 Contact
-Sonu Kumar - [@YourTwitterHandle (Optional)] - your.email@example.com
+Sonu C - [@YourTwitterHandle (Optional)] - your.email@example.com
 
 Project Link: https://github.com/Sonu0412/Number-Plate
