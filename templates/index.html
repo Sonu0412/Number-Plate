@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>License Plate Detector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html,body{
+            margin: 0%;
+            padding: 0%;
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #1a202c;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('https://community.aws/_next/image?url=https%3A%2F%2Fassets.community.aws%2Fa%2F2vho3IAycHQFiHS3Hde0IQxMIML%2Fmacro-eye-iris-jpg.webp%3FimgSize%3D1000x753&w=2048&q=75');
+            background-size: cover;
+            background-repeat: no-repeat;
+            animation: fadeInBackground 2s ease forwards;
+            overflow-x: hidden;
+        }
+
+        @keyframes fadeInBackground {
+            from {
+                background: rgba(247, 250, 252, 0);
+            }
+
+            to {
+                background-image: url('https://community.aws/_next/image?url=https%3A%2F%2Fassets.community.aws%2Fa%2F2vho3IAycHQFiHS3Hde0IQxMIML%2Fmacro-eye-iris-jpg.webp%3FimgSize%3D1000x753&w=2048&q=75');
+        }
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            animation: fadeIn 1s ease forwards, moveInDown 0.5s ease forwards 0.5s;
+            opacity: 0;
+            transform: translateY(-20px);
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes moveInDown {
+            from {
+                transform: translateY(-20px);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        #uploadForm {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.1), 0 3px 4px -1px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s ease forwards, scaleIn 0.5s ease forwards 0.8s;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        #uploadForm input[type="file"] {
+            margin-bottom: 1.5rem;
+            width: 100%;
+            font-size: 1rem;
+            color: #4a5568;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+        }
+
+        #uploadForm button {
+            background-color: #4a5568;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            font-size: 1rem;
+            width: 100%;
+            animation: fadeIn 1s ease forwards, moveInRight 0.5s ease forwards 1s;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        @keyframes moveInRight {
+            from {
+                transform: translateX(20px);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        #uploadForm button:hover {
+            background-color: #2d3748;
+            transform: translateY(-0.25rem);
+        }
+
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            width: 95%;
+            max-width: 1200px;
+            animation: fadeIn 1s ease forwards 1.2s;
+            opacity: 0;
+        }
+
+        .plate-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.1), 0 3px 4px -1px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: scaleIn 0.3s ease forwards;
+            transform: scale(0.95);
+        }
+
+        .plate-container:hover {
+            transform: translateY(-0.5rem) scale(1.05);
+            box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.15), 0 4px 8px -1px rgba(0, 0, 0, 0.12);
+        }
+
+        .plate-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Make the image sharper */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimizeQuality;
+            transform: rotate(0deg);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .plate-container p {
+            font-size: 0.875rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            word-wrap: break-word;
+        }
+
+        .matrix-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            background-color: #edf2f7;
+            margin-top: 0.5rem;
+            width: 100%;
+            box-sizing: border-box;
+            overflow-x: auto;
+        }
+
+        .matrix-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .matrix-table th, .matrix-table td {
+            border: 1px solid #cbd5e0;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #4a5568;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .matrix-table th {
+            background-color: #f0f0f0;
+            font-weight: 500;
+        }
+
+        .matrix-table td {
+            background-color: #fff;
+        }
+
+
+        #error {
+            color: #e53e3e;
+            margin-top: 1rem;
+            font-weight: 500;
+            text-align: center;
+            background-color: #ffeb3b;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            animation: fadeIn 1s ease forwards 1.2s, pulse 2s infinite alternate;
+            opacity: 0;
+            margin-bottom: 2rem;
+            z-index: 10; /* Ensure error message is above other elements */
+            position: relative; /* Needed for z-index to work */
+        }
+
+        @keyframes pulse {
+          from {
+            transform: scale(1);
+            opacity: 1;
+          }
+          to {
+            transform: scale(1.05);
+            opacity: 0.8;
+          }
+        }
+
+
+        @media (max-width: 768px) {
+            #results {
+                gap: 1rem;
+            }
+
+            .plate-container {
+                max-width: 95%;
+            }
+
+            #uploadForm {
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .plate-container {
+                max-width: 95%;
+            }
+
+            #uploadForm input[type="file"] {
+                font-size: 0.9rem;
+            }
+
+            #uploadForm button {
+                font-size: 0.9rem;
+            }
+
+           .matrix-table th, .matrix-table td {
+                font-size: 0.6rem;
+                padding: 0.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload an Image</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Detect License Plate</button>
+    </form>
+    <div id="results"></div>
+    <div id="error"></div>
+    <script>
+        const form = document.getElementById('uploadForm');
+        const resultsDiv = document.getElementById('results');
+        const errorDiv = document.getElementById('error');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            resultsDiv.innerHTML = '';
+            errorDiv.innerHTML = '';
+
+            fetch('/detect_license_plate', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        errorDiv.textContent = `Error: ${data.error}`;
+                        errorDiv.style.opacity = 1;
+                        setTimeout(() => {
+                            errorDiv.style.opacity = 0;
+                        }, 5000);
+
+                    } else if (data.message) {
+                        resultsDiv.innerHTML = `<p>${data.message}</p>`;
+                         if (data.message === "No license plate detected") {
+                            errorDiv.textContent = data.message;
+                            errorDiv.style.opacity = 1;
+                            setTimeout(() => {
+                                errorDiv.style.opacity = 0;
+                            }, 5000);
+                        }
+                    } else if (data.plates) {
+                        data.plates.forEach(plate => {
+                            const plateContainer = document.createElement('div');
+                            plateContainer.className = 'plate-container';
+                            const img = document.createElement('img');
+                            img.src = `data:image/jpeg;base64,${plate.cropped_image}`;
+                            img.className = 'plate-image';
+                            const contourDiv = document.createElement('p');
+                            contourDiv.textContent = 'Contour Points:';
+                            const matrixDiv = document.createElement('div');
+                            matrixDiv.className = 'matrix-container';
+
+                            // Display contour points in a table
+                            if (plate.contour && plate.contour.length === 4) {
+                                const table = document.createElement('table');
+                                table.className = 'matrix-table';
+                                 let headerRow = table.insertRow();
+                                 let th1 = headerRow.insertCell();
+                                 let th2 = headerRow.insertCell();
+                                 th1.textContent = "X";
+                                 th2.textContent = "Y";
+
+                                for (let i = 0; i < 4; i++) {
+                                    const row = table.insertRow();
+                                    const cell1 = row.insertCell();
+                                    const cell2 = row.insertCell();
+                                    cell1.textContent = plate.contour[i][0][0];
+                                    cell2.textContent = plate.contour[i][0][1];
+                                }
+                                matrixDiv.appendChild(table);
+                            } else {
+                                contourDiv.textContent = 'Contour: N/A';
+                            }
+
+                            plateContainer.appendChild(img);
+                            plateContainer.appendChild(contourDiv);
+                            plateContainer.appendChild(matrixDiv);
+                            resultsDiv.appendChild(plateContainer);
+                        });
+                        resultsDiv.style.opacity = 1;
+
+                    }
+                })
+                .catch(error => {
+                    errorDiv.textContent = `Error: ${error.message || 'An unexpected error occurred'}`;
+                    console.error('Error:', error);
+                    errorDiv.style.opacity = 1;
+                    setTimeout(() => {
+                        errorDiv.style.opacity = 0;
+                    }, 5000);
+                });
+        });
+    </script>
+</body>
+</html>
